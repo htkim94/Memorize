@@ -10,14 +10,20 @@ import SwiftUI
 struct ContentView: View {
     let columns = [GridItem(.adaptive(minimum: 80))]
     
-    var emojis: [String] = ["✈️", "🚗", "🚂", "🚲", "🛵", "🏎️", "🚁", "🚢", "🚒", "🚓", "🚃", "🚌", "🚛", "🚜", "🏍️"]
+    static var emojisByThemes: [String: [String]] = [
+        "Vehicles": ["✈️", "🚗", "🚂", "🚲", "🛵", "🏎️", "🚁", "🚢", "🚒", "🚓", "🚃", "🚌", "🚛", "🚜", "🏍️"],
+        "Faces": ["😁", "😆", "🥹", "😂", "🥲", "😍", "😎", "😘", "🥳", "🥸", "😡", "🥶", "😱", "😵‍💫", "🤩"],
+        "Sports": ["⚽️", "🏀", "🏈", "⚾️", "🏐", "🎱", "🏓", "🏸", "🏒", "🥊", "🏹", "🥍", "🛼", "🥌", "🎳"]
+    ]
+    
+    @State var emojis = emojisByThemes["Vehicles"]?.shuffled()
     @State var emojiCount: Int = 6
     
     var body: some View {
         VStack {
             ScrollView {
                 LazyVGrid(columns: columns) {
-                    ForEach(emojis[0..<emojiCount], id: \.self) { emoji in
+                    ForEach(emojis![0..<emojiCount], id: \.self) { emoji in
                         CardView(content: emoji)
                             .aspectRatio(2/3, contentMode: .fill)
                     }
@@ -35,6 +41,7 @@ struct ContentView: View {
             .font(.largeTitle)
             .padding(.horizontal)
         }
+        .padding(.horizontal)
     }
     
     var removeButton: some View {
@@ -49,7 +56,7 @@ struct ContentView: View {
     
     var addButton: some View {
         Button(action: {
-            if emojiCount < emojis.count {
+            if emojiCount < emojis!.count {
                 emojiCount += 1
             }
         }, label: {
@@ -71,6 +78,7 @@ struct CardView: View {
                 Text(content).font(.largeTitle)
             } else {
                 cardShape.fill()
+                Text("for card height").font(.largeTitle)
             }
         }
         .onTapGesture {
